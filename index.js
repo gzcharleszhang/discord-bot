@@ -45,19 +45,22 @@ const startBot = () => {
   client.on('message', message => {
     if (!message.content.startsWith(trigger) || message.author.bot) return
 
-    const argStr = message.content.slice(trigger.length)
-    const args = argStr.split(' ');
+    const args = message.content.slice(trigger.length).split(' ');
     const command = args.shift().toLowerCase();
+    const argStr = message.content.substring(command.length + 2)
 
     switch(command) {
       case 'wmloh':
         message.channel.send('https://www.linkedin.com/in/wei-min-loh/')
+        return
       case 'todev':
         client.users.fetch(DEV_ID).then(dev => {
           dev.send(argStr)
         })
+        return
       case 'help':
         message.channel.send(helpEmbed)
+        return
     }
   })
 
