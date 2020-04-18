@@ -23,6 +23,8 @@ const helpEmbed = new Discord.MessageEmbed()
 **.help:** Show this help page
 **.wmloh:** Who's wmloh?
 **.todev [message]:** Send a message to the dev
+**.riothelp [message]:** Requests support from a Riot staff
+**.cshelp [message]:** Requests support from a CS god
 **.coinflip:** Flip a coin
 **.coinflip [n]:** Flip a coin n times
 **.today:** Get date and day of the year
