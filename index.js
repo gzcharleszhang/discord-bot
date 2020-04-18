@@ -74,6 +74,7 @@ const startBot = () => {
         message.channel.send(helpEmbed)
         return
       case 'coinflip':
+        const FLIP_LIMIT = 42069420
         if (_.isEmpty(args)) {
           const side = Math.random() > 0.5 ? 'Heads.' : 'Tails.'
           message.channel.send(side)
@@ -82,6 +83,9 @@ const startBot = () => {
           if (isNaN(numFlips)) {
             message.channel.send('Invalid number of times.')
           } else {
+            if (numFlips > FLIP_LIMIT) {
+              message.channel.send(`Maximum number of flips is ${FLIP_LIMIT}.`) 
+            }
             let hc = 0
             let tc = 0
             for (let i = 0; i < numFlips; i++) {
