@@ -5,6 +5,7 @@ const cron = require('cron')
 const _ = require('lodash')
 
 const { getToday } = require('./today')
+const { getWeather } = require('./weather')
 
 const BOT_TOKEN = process.env.DISCORD_BOT_TOKEN
 const CHANNEL_ID = process.env.NOTIF_CHANNEL_ID
@@ -21,6 +22,7 @@ const helpEmbed = new Discord.MessageEmbed()
 **.todev [message]:** Send a message to the dev
 **.coinflip [n]:** Flip a coin (n times)
 **.today:** Get date and day of the year
+**.weather [city] [state] [country_code]: Get 3-hour forecast**
     ` },
 	)
 
@@ -92,6 +94,12 @@ const startBot = () => {
       case 'today':
         getToday().then(today => {
           message.channel.send(today)
+        })
+        return
+      case 'weather':
+        const defaultLocation = ['Toronto']
+        getWeather(_.isEmpty(args) ? defaultLocation : args).then(res => {
+          message.channel.send(res)
         })
         return
     }
