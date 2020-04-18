@@ -3,6 +3,7 @@ const Discord = require('discord.js')
 const client = new Discord.Client()
 const cron = require('cron')
 const _ = require('lodash')
+const moment = require('moment')
 
 const { getToday } = require('./today')
 const { getWeather } = require('./weather')
@@ -31,10 +32,12 @@ const helpEmbed = new Discord.MessageEmbed()
 	)
 
 const morningCron = new cron.CronJob('0 0 8 * * *', () => {
-  console.log('running cron')
+  console.log(`${moment().format()}: running cron`)
+
   client.channels.fetch(CHANNEL_ID).then(channel => {
-    const today = getToday
-    channel.send(`Good morning, nerds. ${today}`)
+    getToday().then(today => {
+      channel.send(`Good morning, nerds. ${today}`)
+    })
   })
   
   client.users.fetch(KALLEN_ID).then(user => {
@@ -95,7 +98,7 @@ const startBot = () => {
             let hc = 0
             let tc = 0
             for (let i = 0; i < numFlips; i++) {
-              if (Math.random() > 0.5) {
+              if (Math.random() <= 0.5) {
                 hc++
               } else {
                 tc++
