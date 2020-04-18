@@ -33,6 +33,53 @@ const getRequester = () => {
     });
 }
 
+const getMeme = () =>
+  getRequester().then(r =>
+    r.getSubreddit('dankmemes').getRandomSubmission()
+  ).then(res => {
+    if (!res || !res.url) {
+      return null
+    } else {
+      return {
+        text: 'Dank memes!',
+        url: res.url
+      }
+    }
+  }).catch(() => {
+    return null
+  })
+
+const getFloridaMan = () =>
+  getRequester().then(r =>
+    r.getSubreddit('floridaman').getRandomSubmission()
+  ).then(res => {
+    if (!res || !res.title || !res.url) {
+      return null
+    } else {
+      return `${res.title} ${res.url}`
+    }
+  }).catch(() => {
+    return null
+  })
+
+const getEarthPorn = () =>
+  getRequester().then(r =>
+    r.getSubreddit('earthporn').getRandomSubmission()
+  ).then(res => {
+    if (!res || !res.title || !res.url) {
+      return null
+    } else {
+      return {
+        text: res.title,
+        url: res.url
+      }
+    }
+  }).catch(() => {
+    return null
+  })
+
 module.exports = {
-  getRequester
+  getMeme,
+  getFloridaMan,
+  getEarthPorn
 }

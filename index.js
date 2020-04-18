@@ -4,12 +4,11 @@ const client = new Discord.Client()
 const cron = require('cron')
 const _ = require('lodash')
 const moment = require('moment')
-const snoowrap = require('snoowrap')
 
 const { getToday } = require('./today')
 const { getWeather } = require('./weather')
 const { getCoronaData } = require('./corona')
-const { getRequester } = require('./reddit')
+const { getMeme, getFloridaMan, getEarthPorn } = require('./reddit')
 
 const BOT_TOKEN = process.env.DISCORD_BOT_TOKEN
 const CHANNEL_ID = process.env.NOTIF_CHANNEL_ID
@@ -130,31 +129,34 @@ const startBot = () => {
         })
         return
       case 'floridaman':
-        getRequester().then(r =>
-          r.getSubreddit('floridaman').getRandomSubmission()
-        ).then(res => {
-          if (!res || !res.title || !res.url) {
+        getFloridaMan().then(res => {
+          if (!res) {
             message.channel.send(errorStr)
           } else {
-            message.channel.send(`${res.title} ${res.url}`)
+            message.channel.send(res)
           }
-        }).catch(() => {
-          message.channel.send(errorStr)
         })
         return
       case 'meme':
-        getRequester().then(r =>
-          r.getSubreddit('dankmemes').getRandomSubmission()
-        ).then(res => {
-          if (!res || !res.url) {
+        getMeme().then(res => {
+          if (!res) {
             message.channel.send(errorStr)
           } else {
-            message.channel.send(`Dank memes!`, {
+            message.channel.send(res.text, {
               files: [res.url]
             })
           }
-        }).catch(() => {
-          message.channel.send(errorStr)
+        })
+        return
+      case 'earthporn':
+        getEarthPorn().then(res => {
+          if (!res) {
+            message.channel.send(errorStr)
+          } else {
+            message.channel.send(res.text, {
+              files: [res.url]
+            })
+          }
         })
         return
     }
