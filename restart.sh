@@ -1,0 +1,1 @@
+docker stop dbot && docker rm dbot && ./start.sh
