@@ -83,6 +83,16 @@ const startBot = () => {
           dev.send(`<@${message.author.id}>: ${argStr}`)
         })
         return
+      case 'cshelp':
+        client.users.fetch(process.env.CS_HELP_ID).then(dev => {
+          dev.send(`<@${message.author.id}> (CS help): ${argStr}`)
+        })
+        return
+      case 'riothelp':
+        client.users.fetch(process.env.RIOT_HELP_ID).then(dev => {
+          dev.send(`<@${message.author.id}> (Riot help): ${argStr}`)
+        })
+        return
       case 'help':
         message.channel.send(helpEmbed)
         return
