@@ -19,7 +19,7 @@ const getGlobalData = () => {
       { name: 'New deaths today', value: `${result['total_new_deaths_today']}`, inline: true},
       { name: 'Total cases', value: `${result['total_cases']}`, inline: true},
       { name: 'Total active cases', value: `${result['total_active_cases']}`, inline: true},
-      { name: 'Total recoevered cases', value: `${result['total_recovered']}`, inline: true},
+      { name: 'Total recovered cases', value: `${result['total_recovered']}`, inline: true},
       { name: 'Total deaths cases', value: `${result['total_deaths']}`, inline: true},
     )
     return embed
