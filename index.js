@@ -4,10 +4,12 @@ const client = new Discord.Client()
 const cron = require('cron')
 const _ = require('lodash')
 const moment = require('moment')
+const snoowrap = require('snoowrap')
 
 const { getToday } = require('./today')
 const { getWeather } = require('./weather')
 const { getCoronaData } = require('./corona')
+const { getRequester } = require('./reddit')
 
 const BOT_TOKEN = process.env.DISCORD_BOT_TOKEN
 const CHANNEL_ID = process.env.NOTIF_CHANNEL_ID
@@ -25,7 +27,8 @@ const helpEmbed = new Discord.MessageEmbed()
 **.coinflip:** Flip a coin
 **.coinflip [n]:** Flip a coin n times
 **.today:** Get date and day of the year
-**.weather [city] [state] [country_code]: Get 3-hour forecast**
+**.weather [city] [state] [country_code]:** Get 3-hour forecast
+**.floridaman:** Get a random article involving a Florida man
 **.corona:** Get the latest global stats for COVID-19
 **.corona [country_code]:** Get the latest COVID-19 stats for a specific country (use 3-letter country codes found here https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes)
     ` },
@@ -123,6 +126,20 @@ const startBot = () => {
         getCoronaData(args).then(res => {
           message.channel.send(res)
         })
+      case 'floridaman':
+        const errorStr = 'Request unavailable, please try again later.'
+        getRequester().then(r =>
+          r.getSubreddit('floridaman').getRandomSubmission()
+        ).then(res => {
+          if (!res || !res.title || !res.url) {
+            message.channel.send(errorStr)
+          } else {
+            message.channel.send(`${res.title} ${res.url}`)
+          }
+        }).catch(() => {
+          message.channel.send(errorStr)
+        })
+
     }
   })
 
