@@ -29,11 +29,11 @@ const getWeather = args => {
       if (data.main) {
         const low = toCelcius(data.main.temp_min)
         const high = toCelcius(data.main.temp_max)
-        str += low !== high ? ` ${low} to ${high} celcius.` : ` ${low} cecius`
+        str += low !== high ? ` ${low} to ${high} celsius.` : ` ${low} celsius`
       }
     }
     return str
-  }).catch(e => 'No weather data available.')
+  }).catch(() => 'No weather data available.')
 }
 
 module.exports = {
