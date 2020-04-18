@@ -128,6 +128,7 @@ const startBot = () => {
         getCoronaData(args).then(res => {
           message.channel.send(res)
         })
+        return
       case 'floridaman':
         getRequester().then(r =>
           r.getSubreddit('floridaman').getRandomSubmission()
@@ -155,6 +156,7 @@ const startBot = () => {
         }).catch(() => {
           message.channel.send(errorStr)
         })
+        return
     }
   })
 
