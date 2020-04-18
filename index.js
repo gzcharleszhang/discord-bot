@@ -6,6 +6,7 @@ const _ = require('lodash')
 
 const { getToday } = require('./today')
 const { getWeather } = require('./weather')
+const { getCoronaData } = require('./corona')
 
 const BOT_TOKEN = process.env.DISCORD_BOT_TOKEN
 const CHANNEL_ID = process.env.NOTIF_CHANNEL_ID
@@ -20,9 +21,12 @@ const helpEmbed = new Discord.MessageEmbed()
 **.help:** Show this help page
 **.wmloh:** Who's wmloh?
 **.todev [message]:** Send a message to the dev
-**.coinflip [n]:** Flip a coin (n times)
+**.coinflip:** Flip a coin
+**.coinflip [n]:** Flip a coin n times
 **.today:** Get date and day of the year
 **.weather [city] [state] [country_code]: Get 3-hour forecast**
+**.corona:** Get the latest global stats for COVID-19
+**.corona [country_code]:** Get the latest COVID-19 stats for a specific country (use 3-letter country codes found here https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes)
     ` },
 	)
 
@@ -102,6 +106,10 @@ const startBot = () => {
           message.channel.send(res)
         })
         return
+      case 'corona':
+        getCoronaData(args).then(res => {
+          message.channel.send(res)
+        })
     }
   })
 
