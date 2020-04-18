@@ -1,7 +1,10 @@
 require('dotenv').config()
 const Discord = require('discord.js')
 const client = new Discord.Client()
-const cron = require('cron');
+const cron = require('cron')
+const _ = require('lodash')
+
+const { getToday } = require('./today')
 
 const BOT_TOKEN = process.env.DISCORD_BOT_TOKEN
 const CHANNEL_ID = process.env.NOTIF_CHANNEL_ID
@@ -13,16 +16,19 @@ const helpEmbed = new Discord.MessageEmbed()
 	.setTitle('WMLOH help')
 	.addFields(
     { name: 'List of commands', value: `
-      **.help:** Shows this help page
-      **.wmloh:** Who's wmloh?
-      **.todev:** Sends a message to the dev (usage: \`.todev [message]\`)
+**.help:** Show this help page
+**.wmloh:** Who's wmloh?
+**.todev [message]:** Send a message to the dev
+**.coinflip [n]:** Flip a coin (n times)
+**.today:** Get date and day of the year
     ` },
 	)
 
 const morningCron = new cron.CronJob('0 0 8 * * *', () => {
   console.log('running cron')
   client.channels.fetch(CHANNEL_ID).then(channel => {
-    channel.send('Good morning, nerds!')
+    const today = getToday
+    channel.send(`Good morning, nerds. ${today}`)
   })
   
   client.users.fetch(KALLEN_ID).then(user => {
@@ -55,11 +61,38 @@ const startBot = () => {
         return
       case 'todev':
         client.users.fetch(DEV_ID).then(dev => {
-          dev.send(argStr)
+          dev.send(`<@${message.author.id}>: ${argStr}`)
         })
         return
       case 'help':
         message.channel.send(helpEmbed)
+        return
+      case 'coinflip':
+        if (_.isEmpty(args)) {
+          const side = Math.random() > 0.5 ? 'Heads.' : 'Tails.'
+          message.channel.send(side)
+        } else {
+          const numFlips = parseInt(args[0])
+          if (isNaN(numFlips)) {
+            message.channel.send('Invalid number of times.')
+          } else {
+            let hc = 0
+            let tc = 0
+            for (let i = 0; i < numFlips; i++) {
+              if (Math.random() > 0.5) {
+                hc++
+              } else {
+                tc++
+              }
+            }
+            message.channel.send(`${hc} heads, ${tc} tails.`)
+          }
+        }
+        return
+      case 'today':
+        getToday().then(today => {
+          message.channel.send(today)
+        })
         return
     }
   })
@@ -70,24 +103,3 @@ const startBot = () => {
 }
 
 startBot();
-
-// const getAccessCode = () => {
-//   const URL = `/oauth2/authorize?response_type=code&client_id=${USERNAME}&scope=identify`
-//   axios.get(BASE_URL + URL).then(res => {
-//     return res
-//   }).catch(e => console.log(e))
-// }
-
-// const getToken = () => {
-//   const code = getAccessCode()
-//   console.log(code)
-//   const data = {
-//     'client_id': USERNAME,
-//     'client_secret': PASSWORD,
-//     'grant_type': 'authorization_code',
-//     'code': code,
-//     'scope': 'identify email connections'
-//   }
-// }
-
-
