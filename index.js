@@ -82,10 +82,10 @@ const startBot = () => {
           const numFlips = parseInt(args[0])
           if (isNaN(numFlips)) {
             message.channel.send('Invalid number of times.')
-            return
           } else {
             if (numFlips > FLIP_LIMIT) {
               message.channel.send(`Maximum number of flips is ${FLIP_LIMIT}.`) 
+              return
             }
             let hc = 0
             let tc = 0
