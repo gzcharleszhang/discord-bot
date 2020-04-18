@@ -29,6 +29,7 @@ const helpEmbed = new Discord.MessageEmbed()
 **.today:** Get date and day of the year
 **.weather [city] [state] [country_code]:** Get 3-hour forecast
 **.floridaman:** Get a random article involving a Florida man
+**.meme:** Get a random dank meme
 **.corona:** Get the latest global stats for COVID-19
 **.corona [country_code]:** Get the latest COVID-19 stats for a specific country (use 3-letter country codes found here https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes)
     ` },
@@ -71,6 +72,7 @@ const startBot = () => {
     const command = args.shift().toLowerCase();
     const argStr = message.content.substring(command.length + 2)
 
+    const errorStr = 'Request unavailable, please try again later.'
 
     switch(command) {
       case 'wmloh':
@@ -127,7 +129,6 @@ const startBot = () => {
           message.channel.send(res)
         })
       case 'floridaman':
-        const errorStr = 'Request unavailable, please try again later.'
         getRequester().then(r =>
           r.getSubreddit('floridaman').getRandomSubmission()
         ).then(res => {
@@ -139,7 +140,21 @@ const startBot = () => {
         }).catch(() => {
           message.channel.send(errorStr)
         })
-
+        return
+      case 'meme':
+        getRequester().then(r =>
+          r.getSubreddit('dankmemes').getRandomSubmission()
+        ).then(res => {
+          if (!res || !res.url) {
+            message.channel.send(errorStr)
+          } else {
+            message.channel.send(`Dank memes!`, {
+              files: [res.url]
+            })
+          }
+        }).catch(() => {
+          message.channel.send(errorStr)
+        })
     }
   })
 

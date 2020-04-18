@@ -35,6 +35,9 @@ const getCountryData = (country) => {
     let yesterday = moment().subtract(1, 'day').format('YYYY-MM-DD')
     let offset = 0
     while (!_.get(data.result, today)) {
+      if (offset > 14) {
+        return 'No recent data available.'
+      }
       offset++
       today = moment().subtract(offset, 'day').format('YYYY-MM-DD')
       yesterday = moment().subtract(offset+1, 'day').format('YYYY-MM-DD')
