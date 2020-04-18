@@ -29,6 +29,7 @@ const helpEmbed = new Discord.MessageEmbed()
 **.weather [city] [state] [country_code]:** Get 3-hour forecast
 **.floridaman:** Get a random article involving a Florida man
 **.meme:** Get a random dank meme
+**.earthporn:** Get a random earth porn image
 **.corona:** Get the latest global stats for COVID-19
 **.corona [country_code]:** Get the latest COVID-19 stats for a specific country (use 3-letter country codes found here https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes)
     ` },
