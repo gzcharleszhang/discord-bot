@@ -55,11 +55,16 @@ const startBot = () => {
   })
 
   client.on('message', message => {
+    if (message.mentions.has(client.user)) {
+      message.channel.send('Hi.')
+    }
+
     if (!message.content.startsWith(trigger) || message.author.bot) return
 
     const args = message.content.slice(trigger.length).split(' ');
     const command = args.shift().toLowerCase();
     const argStr = message.content.substring(command.length + 2)
+
 
     switch(command) {
       case 'wmloh':
