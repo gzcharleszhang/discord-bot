@@ -7,6 +7,7 @@ const numeral = require('numeral')
 const API_ERR= 'Request unavailable, please try again later.'
 const INVALID_ARG = 'I do not understand your command, please consult the help page or contact the dev using \`.todev\`.'
 const INVALID_OFFSET = 'Offset must be a number between 0 and 100'
+const INVALID_SORT = 'Sort type must be one of (hot, new, top)'
 
 const getRequester = () => {
   const requestBody = {
@@ -32,9 +33,10 @@ const getRequester = () => {
     });
 }
 
-const getPost = (subName, args) =>
+const getPost = (subName, inputs) =>
   getRequester().then(r => {
     const subReddit = r.getSubreddit(subName)
+    let args = inputs
     if (_.isEmpty(args)) {
       // get random post if no args
       return subReddit.getRandomSubmission().then(res => ({
@@ -42,31 +44,46 @@ const getPost = (subName, args) =>
         res
       }))
     }
-    const flag = args[0]
-    const validTimes = ['all', 'hour', 'day', 'week', 'month', 'year']
-    if (flag === 'top') {
-      let time = 'day'
-      let limit = 1
-      if (args.length > 1 && _.includes(validTimes, args[1])) {
-        time = args[1].toLowerCase()
-        if (args.length > 2) {
-          const offset = parseInt(args[2])
-          if (!isNaN(offset) && offset >= 0 && offset <= 100) {
-            limit += offset
-          } else {
-            return Promise.resolve({ err: INVALID_OFFSET, res: null})
-          }
-        }
-      }
-      return subReddit.getTop({ time, limit }).then(posts => {
-        if (_.isEmpty(posts)) {
-          return { err: API_ERR, res: null }
-        }
-        const post = posts[posts.length - 1]
-        return { err: null, res: post }
-      })
+    const flag = args[0].toLowerCase()
+    const validSort = ['top', 'new', 'hot']
+    if (!_.includes(validSort, flag)) {
+      return Promise.resolve({ err: INVALID_SORT, res: null})
     }
-    return Promise.resolve({ err: INVALID_ARG, res: null})
+    const validTimes = ['all', 'hour', 'day', 'week', 'month', 'year']
+    let time = 'day'
+    let limit = 1
+    if (args.length > 1) {
+      const offset = parseInt(args[1])
+      if (isNaN(offset)) {
+        // if not a number, then we assume offset is 0
+        args = [...args.slice(0,1), 0,...args.slice(1)]
+      } else if (offset < 0 || offset > 100) {
+        return Promise.resolve({ err: INVALID_OFFSET, res: null})
+      } else {
+        limit += offset
+      }
+      if (args.length > 2 && _.includes(validTimes, args[2])) {
+        time = args[2].toLowerCase()
+      }
+    }
+    let promise = Promise.resolve([])
+    if (flag === 'top') {
+      promise = subReddit.getTop({ time, limit })
+    } else if (flag === 'hot') {
+      promise = subReddit.getHot({ time, limit })
+    } else if (flag === 'new') {
+      promise = subReddit.getNew({ time, limit })
+    } else {
+      // return error if flag is not recognized
+      return Promise.resolve({ err: INVALID_ARG, res: null})
+    }
+    return promise.then(posts => {
+      if (_.isEmpty(posts)) {
+        return { err: API_ERR, res: null }
+      }
+      const post = posts[posts.length - 1]
+      return { err: null, res: post }
+    })
   })
 
 const getScore = post => {
@@ -126,8 +143,22 @@ const getEarthPorn = args =>
     return { text: API_ERR }
   })
 
+const getSpacePorn = args =>
+  getPost('spaceporn', args).then(({err, res})  => {
+    if (!res || !res.title || !res.url) {
+      return { text: err }
+    } else {
+      return {
+        text: includeScore(res, `${res.title} ${res.url}`),
+      }
+    }
+  }).catch(() => {
+    return { text: API_ERR }
+  })
+
 module.exports = {
   getMeme,
   getFloridaMan,
-  getEarthPorn
+  getEarthPorn,
+  getSpacePorn
 }

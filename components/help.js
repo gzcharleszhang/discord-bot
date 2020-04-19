@@ -27,16 +27,18 @@ const helpEmbed = new Discord.MessageEmbed()
 **.floridaman:** Get a article from /r/FloridaMan.
 **.meme:** Get a meme from /r/DankMemes.
 **.earthporn:** Get an image from /r/EarthPorn.
+**.spaceporn:** Get an image from /r/SpacePorn.
 
-Reddit commands accept optional parameters [sort_type] [time_range] [offset].
-- **sort_type** is currently limited to 'top', other types coming soon!.
-- **time_range** is one of (all, year, month, week, day, hour), default is 'day'.
+Reddit commands accept optional parameters [sort_type] [offset] [time_range].
+- **sort_type** is one of (hot, new, top).
 - **offset** is a number between 0 and 100, default is 0.
+- **time_range** is only available if sort_type='top'. One of (all, year, month, week, day, hour), default is 'day'.
 
 Example Usage:
-\`.floridaman top\`
+\`.floridaman hot\`
+\`.spaceporn new 1\`
 \`.meme top month \`
-\`.earthporn top week 2 \`
+\`.earthporn top 2 week\`
 ` },
 	)
 

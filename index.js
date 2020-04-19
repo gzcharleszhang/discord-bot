@@ -6,7 +6,7 @@ const _ = require('lodash')
 const { getToday } = require('./components/today')
 const { getWeather } = require('./components/weather')
 const { getCoronaData } = require('./components/corona')
-const { getMeme, getFloridaMan, getEarthPorn } = require('./components/reddit')
+const { getMeme, getFloridaMan, getEarthPorn, getSpacePorn } = require('./components/reddit')
 const { helpEmbed } = require('./components/help')
 const { morningCron } = require('./components/crons')
 const { coinflip } = require('./components/coinflip')
@@ -99,9 +99,13 @@ const startBot = () => {
         )
         break
       case 'earthporn':
-        promise = getEarthPorn(args).then(res => {
-          return message.channel.send(res.text, _.get(res, 'options', null))
-        }
+        promise = getEarthPorn(args).then(res =>
+          message.channel.send(res.text, _.get(res, 'options', null))
+        )
+        break
+      case 'spaceporn':
+        promise = getSpacePorn(args).then(res =>
+          message.channel.send(res.text, _.get(res, 'options', null))
         )
         break
       case 'testerr':
