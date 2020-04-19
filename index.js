@@ -36,9 +36,16 @@ const startBot = () => {
 
     if (!message.content.startsWith(trigger) || message.author.bot) return Promise.resolve(null)
 
-    const args = message.content.slice(trigger.length).split(' ');
+    // const args = message.content.slice(trigger.length).split(' ');
+    let args = message.content.slice(trigger.length).match(/[^\s"']+|"([^"]*)"|'([^']*)'/g)
+    args = _.map(args, arg => {
+      if (arg[0].match(/'|"/g) && arg[arg.length-1].match(/'|"/g)) {
+        return arg.slice(1,arg.length-1)
+      }
+      return arg
+    })
     const command = args.shift().toLowerCase();
-    const argStr = message.content.substring(command.length + 2)
+    const argStr = message.content.slice(command.length + 2)
 
     switch(command) {
       case 'wmloh':
