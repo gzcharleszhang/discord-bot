@@ -2,18 +2,13 @@ const snoowrap = require('snoowrap')
 const axios = require('axios').default
 const qs = require('querystring')
 const _ = require('lodash')
+const numeral = require('numeral')
 
 const API_ERR= 'Request unavailable, please try again later.'
 const INVALID_ARG = 'I do not understand your command, please consult the help page or contact the dev using \`.todev\`.'
 const INVALID_OFFSET = 'Offset must be a number between 0 and 100'
 
 const getRequester = () => {
-  // const r = new snoowrap({
-  //   userAgent: 'web:wmloh:0.1.0 (by /u/dankat)',
-  //   clientId: process.env.REDDIT_CLIENT_ID,
-  //   clientSecret: process.env.REDDIT_CLIENT_SECRET,
-  //   refreshToken: process.env.REDDIT_REFRESH_TOKEN
-  // });
   const requestBody = {
     'grant_type': 'client_credentials'
   }
@@ -74,13 +69,29 @@ const getPost = (subName, args) =>
     return Promise.resolve({ err: INVALID_ARG, res: null})
   })
 
+const getScore = post => {
+  const ups = parseInt(post.ups)
+  const downs = parseInt(post.downs)
+  if (!post || isNaN(ups) || isNaN(downs)) {
+    return null
+  }
+  const score = ups - downs
+  const text = numeral(score).format('0a')
+  return score > 0 ? `+${text}` : text
+}
+
+const includeScore = (post, text) => {
+  const score = getScore(post)
+  return score ? `**(${score})** ${text}` : text
+}
+
 const getMeme = args =>
   getPost('dankmemes', args).then(({err, res}) => {
     if (!res || !res.url) {
       return { text: err }
     } else {
       return {
-        text: `Dank memes! ${res.url}`,
+        text: includeScore(res,`Dank memes! ${res.url}`),
         options: null
       }
     }
@@ -94,7 +105,7 @@ const getFloridaMan = args =>
       return { text: err }
     } else {
       return {
-        text: `${res.title} ${res.url}`,
+        text: includeScore(res, `${res.title} ${res.url}`),
         options: null
       }
     }
@@ -102,13 +113,13 @@ const getFloridaMan = args =>
     return { text: API_ERR }
   })
 
-  const getEarthPorn = args =>
+const getEarthPorn = args =>
   getPost('earthporn', args).then(({err, res})  => {
     if (!res || !res.title || !res.url) {
       return { text: err }
     } else {
       return {
-        text: `${res.title} ${res.url}`,
+        text: includeScore(res, `${res.title} ${res.url}`),
       }
     }
   }).catch(() => {
