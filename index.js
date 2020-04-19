@@ -6,7 +6,7 @@ const _ = require('lodash')
 const { getToday } = require('./components/today')
 const { getWeather } = require('./components/weather')
 const { getCoronaData } = require('./components/corona')
-const { getMeme, getFloridaMan, getEarthPorn, getSpacePorn } = require('./components/reddit')
+const reddit = require('./components/reddit')
 const { helpEmbed } = require('./components/help')
 const { morningCron } = require('./components/crons')
 const { coinflip } = require('./components/coinflip')
@@ -89,22 +89,27 @@ const startBot = () => {
         )
         break
       case 'floridaman':
-        promise = getFloridaMan(args).then(res =>
+        promise = reddit.getFloridaMan(args).then(res =>
           message.channel.send(res.text, _.get(res, 'options', null))
         )
         break
       case 'meme':
-        promise = getMeme(args).then(res =>
+        promise = reddit.getMeme(args).then(res =>
           message.channel.send(res.text, _.get(res, 'options', null))
         )
         break
       case 'earthporn':
-        promise = getEarthPorn(args).then(res =>
+        promise = reddit.getEarthPorn(args).then(res =>
           message.channel.send(res.text, _.get(res, 'options', null))
         )
         break
       case 'spaceporn':
-        promise = getSpacePorn(args).then(res =>
+        promise = reddit.getSpacePorn(args).then(res =>
+          message.channel.send(res.text, _.get(res, 'options', null))
+        )
+        break
+      case 'creepy':
+        promise = reddit.getCreepy(args).then(res =>
           message.channel.send(res.text, _.get(res, 'options', null))
         )
         break

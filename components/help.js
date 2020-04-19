@@ -28,6 +28,7 @@ const helpEmbed = new Discord.MessageEmbed()
 **.meme:** Get a meme from /r/DankMemes.
 **.earthporn:** Get an image from /r/EarthPorn.
 **.spaceporn:** Get an image from /r/SpacePorn.
+**.creepy:** Get an image from /r/Creepy.
 
 Reddit commands accept optional parameters [sort_type] [offset] [time_range].
 - **sort_type** is one of (hot, new, top).

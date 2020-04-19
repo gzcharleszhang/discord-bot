@@ -33,7 +33,7 @@ const getRequester = () => {
     });
 }
 
-const getPost = (subName, inputs) =>
+const getPostData = (subName, inputs) =>
   getRequester().then(r => {
     const subReddit = r.getSubreddit(subName)
     let args = inputs
@@ -102,63 +102,53 @@ const includeScore = (post, text) => {
   return score ? `**(${score})** ${text}` : text
 }
 
-const getMeme = args =>
-  getPost('dankmemes', args).then(({err, res}) => {
+const getPost = (subreddit, args, message) =>
+  getPostData(subreddit, args).then(({err, res}) => {
     if (!res || !res.url) {
       return { text: err }
     } else {
       return {
-        text: includeScore(res,`Dank memes! ${res.url}`),
+        text: includeScore(res,`${message} ${res.url}`),
         options: null
       }
     }
   }).catch(() => {
     return { text: API_ERR }
   })
+
+const getPostWithTitle = (subreddit, args) =>
+  getPostData(subreddit, args).then(({err, res})  => {
+    if (!res || !res.title || !res.url) {
+      return { text: err }
+    } else {
+      return {
+        text: includeScore(res, `${res.title} ${res.url}`),
+        options: null
+      }
+    }
+  }).catch(() => {
+    return { text: API_ERR }
+  })
+
+const getMeme = args =>
+  getPost('dankmemes', args, 'Dank memes!')
+
+const getCreepy = args =>
+  getPost('creepy', args, 'SpoOoo00oOky!')
 
 const getFloridaMan = args =>
-  getPost('floridaman', args).then(({err, res})  => {
-    if (!res || !res.title || !res.url) {
-      return { text: err }
-    } else {
-      return {
-        text: includeScore(res, `${res.title} ${res.url}`),
-        options: null
-      }
-    }
-  }).catch(() => {
-    return { text: API_ERR }
-  })
+  getPostWithTitle('floridaman', args)
 
 const getEarthPorn = args =>
-  getPost('earthporn', args).then(({err, res})  => {
-    if (!res || !res.title || !res.url) {
-      return { text: err }
-    } else {
-      return {
-        text: includeScore(res, `${res.title} ${res.url}`),
-      }
-    }
-  }).catch(() => {
-    return { text: API_ERR }
-  })
+  getPostWithTitle('earthporn', args)
 
 const getSpacePorn = args =>
-  getPost('spaceporn', args).then(({err, res})  => {
-    if (!res || !res.title || !res.url) {
-      return { text: err }
-    } else {
-      return {
-        text: includeScore(res, `${res.title} ${res.url}`),
-      }
-    }
-  }).catch(() => {
-    return { text: API_ERR }
-  })
+  getPostWithTitle('spaceporn', args)
 
 module.exports = {
   getMeme,
   getFloridaMan,
   getEarthPorn,
-  getSpacePorn
+  getSpacePorn,
+  getCreepy
 }
