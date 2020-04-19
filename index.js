@@ -22,7 +22,7 @@ const startBot = () => {
       console.log('Bot is ready!')
     } else {
       client.channels.fetch(CHANNEL_ID).then(channel => {
-        channel.send('wmloh has awaken with new powers!')
+        channel.send('wmloh has awoken with new powers!')
       })
     }
   })
