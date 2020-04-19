@@ -14,7 +14,7 @@ const morningCron = client => new cron.CronJob('0 0 8 * * *', () => {
   })
   
   client.users.fetch(process.env.NOTIF_USER_ID).then(user => {
-    user.send('morn")')
+    user.send('morn')
   })
 }, null, false, 'America/Toronto')
 
