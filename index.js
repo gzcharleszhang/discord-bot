@@ -9,33 +9,13 @@ const { getToday } = require('./today')
 const { getWeather } = require('./weather')
 const { getCoronaData } = require('./corona')
 const { getMeme, getFloridaMan, getEarthPorn } = require('./reddit')
+const { helpEmbed } = require('./help')
 
 const BOT_TOKEN = process.env.DISCORD_BOT_TOKEN
 const CHANNEL_ID = process.env.NOTIF_CHANNEL_ID
 const KALLEN_ID = process.env.NOTIF_USER_ID
 const DEV_ID = process.env.DEV_ID
 
-const helpEmbed = new Discord.MessageEmbed()
-	.setColor('#0099ff')
-	.setTitle('WMLOH help')
-	.addFields(
-    { name: 'List of commands', value: `
-**.help:** Show this help page
-**.wmloh:** Who's wmloh?
-**.todev [message]:** Send a message to the dev
-**.riothelp [message]:** Request support from a Riot specialist
-**.cshelp [message]:** Request support from a CS god
-**.coinflip:** Flip a coin
-**.coinflip [n]:** Flip a coin n times
-**.today:** Get date and day of the year
-**.weather [city] [state] [country_code]:** Get 3-hour forecast
-**.floridaman:** Get a random article involving a Florida man
-**.meme:** Get a random dank meme
-**.earthporn:** Get a random earth porn image
-**.corona:** Get the latest global stats for COVID-19
-**.corona [country_code]:** Get the latest COVID-19 stats for a specific country (use 3-letter country codes found here https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes)
-    ` },
-	)
 
 const morningCron = new cron.CronJob('0 0 8 * * *', () => {
   console.log(`${moment().format()}: running cron`)
@@ -64,52 +44,52 @@ const startBot = () => {
   })
 
   client.on('message', message => {
+    let promise = Promise.resolve(null)
+
     if (message.mentions.has(client.user)) {
       message.channel.send('Hi.')
     }
 
-    if (!message.content.startsWith(trigger) || message.author.bot) return
+    if (!message.content.startsWith(trigger) || message.author.bot) return Promise.resolve(null)
 
     const args = message.content.slice(trigger.length).split(' ');
     const command = args.shift().toLowerCase();
     const argStr = message.content.substring(command.length + 2)
 
-    const errorStr = 'Request unavailable, please try again later.'
-
     switch(command) {
       case 'wmloh':
-        message.channel.send('https://www.linkedin.com/in/wei-min-loh/')
-        return
+        promise = message.channel.send('https://www.linkedin.com/in/wei-min-loh/')
+        break
       case 'todev':
-        client.users.fetch(DEV_ID).then(dev => {
+        promise = client.users.fetch(DEV_ID).then(dev =>
           dev.send(`<@${message.author.id}>: ${argStr}`)
-        })
-        return
+        )
+        break
       case 'cshelp':
-        client.users.fetch(process.env.CS_HELP_ID).then(dev => {
+        promise = client.users.fetch(process.env.CS_HELP_ID).then(dev =>
           dev.send(`<@${message.author.id}> (CS help): ${argStr}`)
-        })
-        return
+        )
+        break
       case 'riothelp':
-        client.users.fetch(process.env.RIOT_HELP_ID).then(dev => {
+        promise = client.users.fetch(process.env.RIOT_HELP_ID).then(dev =>
           dev.send(`<@${message.author.id}> (Riot help): ${argStr}`)
-        })
-        return
+        )
+        break
       case 'help':
-        message.channel.send(helpEmbed)
-        return
+        promise = message.channel.send(helpEmbed)
+        break
       case 'coinflip':
         const FLIP_LIMIT = 42069420
         if (_.isEmpty(args)) {
           const side = Math.random() > 0.5 ? 'Heads.' : 'Tails.'
-          message.channel.send(side)
+          promise = message.channel.send(side)
         } else {
           const numFlips = parseInt(args[0])
           if (isNaN(numFlips)) {
-            message.channel.send('Invalid number of times.')
+            promise = message.channel.send('Invalid number of times.')
           } else {
             if (numFlips > FLIP_LIMIT) {
-              message.channel.send(`Maximum number of flips is ${FLIP_LIMIT}.`) 
+              promise = message.channel.send(`Maximum number of flips is ${FLIP_LIMIT}.`) 
               return
             }
             let hc = 0
@@ -121,58 +101,52 @@ const startBot = () => {
                 tc++
               }
             }
-            message.channel.send(`${hc} heads, ${tc} tails.`)
+            promise = message.channel.send(`${hc} heads, ${tc} tails.`)
           }
         }
-        return
+        break
       case 'today':
-        getToday().then(today => {
+        promise = getToday().then(today =>
           message.channel.send(today)
-        })
-        return
+        )
+        break
       case 'weather':
         const defaultLocation = ['Toronto']
-        getWeather(_.isEmpty(args) ? defaultLocation : args).then(res => {
+        promise = getWeather(_.isEmpty(args) ? defaultLocation : args).then(res =>
           message.channel.send(res)
-        })
-        return
+        )
+        break
       case 'corona':
-        getCoronaData(args).then(res => {
+        promise = getCoronaData(args).then(res =>
           message.channel.send(res)
-        })
-        return
+        )
+        break
       case 'floridaman':
-        getFloridaMan().then(res => {
-          if (!res) {
-            message.channel.send(errorStr)
-          } else {
-            message.channel.send(res)
-          }
-        })
-        return
+        promise = getFloridaMan(args).then(res =>
+          message.channel.send(res.text, _.get(res, 'options', null))
+        )
+        break
       case 'meme':
-        getMeme().then(res => {
-          if (!res) {
-            message.channel.send(errorStr)
-          } else {
-            message.channel.send(res.text, {
-              files: [res.url]
-            })
-          }
-        })
-        return
+        promise = getMeme(args).then(res =>
+          message.channel.send(res.text, _.get(res, 'options', null))
+        )
+        break
       case 'earthporn':
-        getEarthPorn().then(res => {
-          if (!res) {
-            message.channel.send(errorStr)
-          } else {
-            message.channel.send(res.text, {
-              files: [res.url]
-            })
-          }
-        })
-        return
+        promise = getEarthPorn(args).then(res => {
+          return message.channel.send(res.text, _.get(res, 'options', null))
+        }
+        )
+        break
+      case 'testerr':
+        promise = message.channel.send(null)
+        break
     }
+    return promise.catch(e => {
+      console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+      console.log(`${message.author.username}: ${message.content}`)
+      console.log(e)
+      return message.channel.send('Something went wrong, please try again later or contact dev using \`.todev\`')
+    })
   })
 
   client.login(BOT_TOKEN)
