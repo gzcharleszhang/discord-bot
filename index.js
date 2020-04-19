@@ -1,35 +1,19 @@
 require('dotenv').config()
 const Discord = require('discord.js')
 const client = new Discord.Client()
-const cron = require('cron')
 const _ = require('lodash')
-const moment = require('moment')
 
-const { getToday } = require('./today')
-const { getWeather } = require('./weather')
-const { getCoronaData } = require('./corona')
-const { getMeme, getFloridaMan, getEarthPorn } = require('./reddit')
-const { helpEmbed } = require('./help')
+const { getToday } = require('./components/today')
+const { getWeather } = require('./components/weather')
+const { getCoronaData } = require('./components/corona')
+const { getMeme, getFloridaMan, getEarthPorn } = require('./components/reddit')
+const { helpEmbed } = require('./components/help')
+const { morningCron } = require('./components/crons')
+const { coinflip } = require('./components/coinflip')
 
 const BOT_TOKEN = process.env.DISCORD_BOT_TOKEN
 const CHANNEL_ID = process.env.NOTIF_CHANNEL_ID
-const KALLEN_ID = process.env.NOTIF_USER_ID
 const DEV_ID = process.env.DEV_ID
-
-
-const morningCron = new cron.CronJob('0 0 8 * * *', () => {
-  console.log(`${moment().format()}: running cron`)
-
-  client.channels.fetch(CHANNEL_ID).then(channel => {
-    getToday().then(today => {
-      channel.send(`Good morning, nerds. ${today}`)
-    })
-  })
-  
-  client.users.fetch(KALLEN_ID).then(user => {
-    user.send('morn (reply with ".todev [message]")')
-  })
-}, null, false, 'America/Toronto')
 
 const startBot = () => {
   const trigger = '.'
@@ -38,7 +22,7 @@ const startBot = () => {
       console.log('Bot is ready!')
     } else {
       client.channels.fetch(CHANNEL_ID).then(channel => {
-        channel.send('wmloh is woke')
+        channel.send('wmloh has awaken with new powers!')
       })
     }
   })
@@ -79,31 +63,7 @@ const startBot = () => {
         promise = message.channel.send(helpEmbed)
         break
       case 'coinflip':
-        const FLIP_LIMIT = 42069420
-        if (_.isEmpty(args)) {
-          const side = Math.random() > 0.5 ? 'Heads.' : 'Tails.'
-          promise = message.channel.send(side)
-        } else {
-          const numFlips = parseInt(args[0])
-          if (isNaN(numFlips)) {
-            promise = message.channel.send('Invalid number of times.')
-          } else {
-            if (numFlips > FLIP_LIMIT) {
-              promise = message.channel.send(`Maximum number of flips is ${FLIP_LIMIT}.`) 
-              return
-            }
-            let hc = 0
-            let tc = 0
-            for (let i = 0; i < numFlips; i++) {
-              if (Math.random() <= 0.5) {
-                hc++
-              } else {
-                tc++
-              }
-            }
-            promise = message.channel.send(`${hc} heads, ${tc} tails.`)
-          }
-        }
+        promise = message.channel.send(coinflip(args))
         break
       case 'today':
         promise = getToday().then(today =>
@@ -151,7 +111,7 @@ const startBot = () => {
 
   client.login(BOT_TOKEN)
 
-  morningCron.start()
+  morningCron(client).start()
 }
 
 startBot();
