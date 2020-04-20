@@ -7,14 +7,13 @@ const moment = require('moment')
 
 const { getToday } = require('./components/today')
 const { getWeather } = require('./components/weather')
-const { getCoronaData } = require('./components/corona')
+const { getCoronaData, getCaliforniaData } = require('./components/corona')
 const reddit = require('./components/reddit')
 const { helpEmbed } = require('./components/help')
 const { morningCron } = require('./components/crons')
 const { coinflip } = require('./components/coinflip')
 
 const BOT_TOKEN = process.env.DISCORD_BOT_TOKEN
-const CHANNEL_ID = process.env.NOTIF_CHANNEL_ID
 const DEV_ID = process.env.DEV_ID
 
 const logger = winston.createLogger({
@@ -164,7 +163,8 @@ const startBot = () => {
         author: message.author.id,
         authorName: message.author.username,
         channel: message.channel.id,
-        content: message.content
+        content: message.content,
+        error: e
       }
       logger.error(errorObj)
       return message.channel.send('Something went wrong, please try again later or contact dev using \`.todev\`')

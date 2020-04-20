@@ -19,7 +19,7 @@ const helpEmbed = new Discord.MessageEmbed()
 ` },
     { name: '🦠 COVID-19', value: `
 **.corona:** Get the latest global stats for COVID-19
-**.corona [country_code]:** Get the latest COVID-19 stats for a specific country (use 3-letter country codes found here https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes)
+**.corona [country_code]:** Get the latest COVID-19 stats for a specific country (use 3-letter country codes found [here](https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes))
 
 
 ` },

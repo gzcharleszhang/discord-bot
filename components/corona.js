@@ -2,6 +2,7 @@ const axios = require('axios').default
 const _ = require('lodash')
 const moment = require('moment')
 const Discord = require('discord.js')
+const csv = require('@fast-csv/parse')
 
 const noData = 'No data available.'
 
@@ -50,24 +51,56 @@ const getCountryData = (country) => {
       rd: rt - ry
     }
     const embed = new Discord.MessageEmbed()
-    .setColor('#0099ff')
-    .setTitle(`Latest COVID-19 Stats in ${country}`)
-    .setDescription(`Last updated ${today}`)
-    .addFields(
-      { name: 'New cases today', value: `${diff.cd}`, inline: true},
-      { name: 'New deaths today', value: `${diff.dd}`, inline: true},
-      { name: 'New recovered today', value: `${diff.rd}`, inline: true},
-      { name: 'Total cases', value: `${ct}`, inline: true},
-      { name: 'Toal recovered', value: `${rt}`, inline: true},
-      { name: 'Total deaths', value: `${dt}`, inline: true},
-    )
+      .setColor('#0099ff')
+      .setTitle(`Latest COVID-19 Stats in ${country}`)
+      .setDescription(`Last updated ${today}`)
+      .addFields(
+        { name: 'New cases today', value: `${diff.cd}`, inline: true},
+        { name: 'New deaths today', value: `${diff.dd}`, inline: true},
+        { name: 'New recovered today', value: `${diff.rd}`, inline: true},
+        { name: 'Total cases', value: `${ct}`, inline: true},
+        { name: 'Toal recovered', value: `${rt}`, inline: true},
+        { name: 'Total deaths', value: `${dt}`, inline: true},
+      )
     return embed
   }).catch(() => 'No data available, make sure the 3-letter country code is in this list https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes.')
+}
+
+const getCaliforniaData = () => {
+  const CSV_URL = 'https://raw.githubusercontent.com/datadesk/california-coronavirus-data/master/latimes-state-totals.csv'
+  return axios.get(CSV_URL).then(res =>
+    new Promise((resolve, reject) =>
+      csv.parseString(res.data, {
+        headers: true,
+        maxRows: 1
+      }).on('data', data => {
+        const {
+          date,
+          confirmed_cases,
+          deaths,
+          new_confirmed_cases,
+          new_deaths
+        } = data
+        const embed = new Discord.MessageEmbed()
+          .setColor('#0099ff')
+          .setTitle(`Latest COVID-19 Stats in California`)
+          .setDescription(`Last updated ${date}`)
+          .addFields(
+            { name: 'New cases', value: `${new_confirmed_cases}`, inline: true},
+            { name: 'New deaths', value: `${new_deaths}`, inline: true},
+            { name: 'Total cases', value: `${confirmed_cases}`, inline: true},
+            { name: 'Total deaths', value: `${deaths}`, inline: true},
+          )
+        resolve(embed)
+      }).on('end', () => reject('No data available.')))
+  )
 }
 
 const getCoronaData = args => {
   if (_.isEmpty(args)) {
     return getGlobalData()
+  } else if (args[0].toLowerCase().includes('cali')) {
+    return getCaliforniaData()
   } else if (args[0].length != 3) {
     return Promise.resolve('Please specify a 3-letter country code.')
   } else {
@@ -76,5 +109,6 @@ const getCoronaData = args => {
 }
 
 module.exports = {
-  getCoronaData
+  getCoronaData,
+  getCaliforniaData
 }
