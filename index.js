@@ -25,6 +25,7 @@ const startBot = () => {
         channel.send('wmloh has awoken with new powers!')
       })
     }
+    client.user.setActivity('.help', { type: 'WATCHING' })
   })
 
   client.on('message', message => {
