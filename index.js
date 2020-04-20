@@ -55,17 +55,17 @@ const startBot = () => {
       case 'todev':
         promise = client.users.fetch(DEV_ID).then(dev =>
           dev.send(`<@${message.author.id}>: ${argStr}`)
-        )
+        ).then(() => message.channel.send('Message sent!'))
         break
       case 'cshelp':
         promise = client.users.fetch(process.env.CS_HELP_ID).then(dev =>
           dev.send(`<@${message.author.id}> (CS help): ${argStr}`)
-        )
+        ).then(() => message.channel.send('Message sent!'))
         break
       case 'riothelp':
         promise = client.users.fetch(process.env.RIOT_HELP_ID).then(dev =>
           dev.send(`<@${message.author.id}> (Riot help): ${argStr}`)
-        )
+        ).then(() => message.channel.send('Message sent!'))
         break
       case 'help':
         promise = message.channel.send(helpEmbed)
@@ -111,6 +111,11 @@ const startBot = () => {
         break
       case 'creepy':
         promise = reddit.getCreepy(args).then(res =>
+          message.channel.send(res.text, _.get(res, 'options', null))
+        )
+        break
+      case 'gonecivil':
+        promise = reddit.getGoneCivil(args).then(res =>
           message.channel.send(res.text, _.get(res, 'options', null))
         )
         break

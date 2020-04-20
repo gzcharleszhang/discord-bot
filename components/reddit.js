@@ -134,7 +134,7 @@ const getMeme = args =>
   getPost('dankmemes', args, 'Dank memes!')
 
 const getCreepy = args =>
-  getPost('creepy', args, 'SpoOoo00oOky!')
+  getPostWithTitle('creepy', args)
 
 const getFloridaMan = args =>
   getPostWithTitle('floridaman', args)
@@ -145,10 +145,14 @@ const getEarthPorn = args =>
 const getSpacePorn = args =>
   getPostWithTitle('spaceporn', args)
 
+const getGoneCivil = args =>
+  getPostWithTitle('gonecivil', args)
+
 module.exports = {
   getMeme,
   getFloridaMan,
   getEarthPorn,
   getSpacePorn,
-  getCreepy
+  getCreepy,
+  getGoneCivil
 }
