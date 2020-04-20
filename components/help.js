@@ -24,11 +24,12 @@ const helpEmbed = new Discord.MessageEmbed()
 
 ` },
     { name: '🔥 Reddit Commands', value: `
-**.floridaman:** Get a article from /r/FloridaMan.
+**.floridaman:** Get an article from /r/FloridaMan.
 **.meme:** Get a meme from /r/DankMemes.
 **.earthporn:** Get an image from /r/EarthPorn.
 **.spaceporn:** Get an image from /r/SpacePorn.
-**.creepy:** Get an image from /r/Creepy.
+**.creepy:** Get a creepy post from /r/Creepy.
+**.gonecivil:** Get a civil post from /r/GoneCivil.
 
 Reddit commands accept optional parameters [sort_type] [offset] [time_range].
 - **sort_type** is one of (hot, new, top).
