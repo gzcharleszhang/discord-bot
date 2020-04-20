@@ -46,8 +46,8 @@ const startBot = () => {
     if (process.env.NODE_ENV == 'dev') {
       console.log('Bot is ready!')
     } else {
-      client.channels.fetch(CHANNEL_ID).then(channel => {
-        channel.send('wmloh has awoken with new powers!')
+      client.users.fetch(DEV_ID).then(dev => {
+        dev.send('Bot is up!')
       })
     }
     client.user.setActivity('.help', { type: 'WATCHING' })
