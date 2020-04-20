@@ -17,6 +17,7 @@
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
     "numeral": "^2.0.6",
-    "snoowrap": "^1.21.0"
+    "snoowrap": "^1.21.0",
+    "winston": "^3.2.1"
   }
 }

@@ -2,6 +2,8 @@ require('dotenv').config()
 const Discord = require('discord.js')
 const client = new Discord.Client()
 const _ = require('lodash')
+const winston = require('winston')
+const moment = require('moment')
 
 const { getToday } = require('./components/today')
 const { getWeather } = require('./components/weather')
@@ -14,6 +16,29 @@ const { coinflip } = require('./components/coinflip')
 const BOT_TOKEN = process.env.DISCORD_BOT_TOKEN
 const CHANNEL_ID = process.env.NOTIF_CHANNEL_ID
 const DEV_ID = process.env.DEV_ID
+
+const logger = winston.createLogger({
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.printf(({ level, message, timestamp }) =>
+      `[${timestamp}] ${level}: ${JSON.stringify(message)}`)
+  ),
+  transports: [
+    new winston.transports.File({
+      filename: `logs/${moment().format('YYYY-MM-DD')}.log`
+    }),
+    new winston.transports.File({
+      filename: `logs/${moment().format('YYYY-MM-DD')}-error.log`,
+      level: 'error'
+    })
+  ]
+})
+
+if (process.env.NODE_ENV === 'dev') {
+  logger.add(new winston.transports.Console({
+    format: winston.format.prettyPrint()
+  }))
+}
 
 const startBot = () => {
   const trigger = '.'
@@ -47,6 +72,17 @@ const startBot = () => {
     })
     const command = args.shift().toLowerCase();
     const argStr = message.content.slice(command.length + 2)
+
+    const requestObj = {
+      author: message.author.id,
+      authorName: message.author.username,
+      channel: message.channel.id,
+      command,
+      args,
+      content: message.content
+    }
+
+    logger.info(requestObj)
 
     switch(command) {
       case 'wmloh':
@@ -124,9 +160,13 @@ const startBot = () => {
         break
     }
     return promise.catch(e => {
-      console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
-      console.log(`${message.author.username}: ${message.content}`)
-      console.log(e)
+      const errorObj = {
+        author: message.author.id,
+        authorName: message.author.username,
+        channel: message.channel.id,
+        content: message.content
+      }
+      logger.error(errorObj)
       return message.channel.send('Something went wrong, please try again later or contact dev using \`.todev\`')
     })
   })
