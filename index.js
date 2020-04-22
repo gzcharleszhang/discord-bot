@@ -7,7 +7,7 @@ const moment = require('moment')
 
 const { getToday } = require('./components/today')
 const { getWeather } = require('./components/weather')
-const { getCoronaData, getCaliforniaData } = require('./components/corona')
+const { getCoronaData } = require('./components/corona')
 const reddit = require('./components/reddit')
 const { helpEmbed } = require('./components/help')
 const { morningCron } = require('./components/crons')
@@ -126,32 +126,32 @@ const startBot = () => {
         break
       case 'floridaman':
         promise = reddit.getFloridaMan(args).then(res =>
-          message.channel.send(res.text, _.get(res, 'options', null))
+          message.channel.send(reddit.appendUrl(res))
         )
         break
       case 'meme':
         promise = reddit.getMeme(args).then(res =>
-          message.channel.send(res.text, _.get(res, 'options', null))
+          message.channel.send(reddit.appendUrl(res))
         )
         break
       case 'earthporn':
         promise = reddit.getEarthPorn(args).then(res =>
-          message.channel.send(res.text, _.get(res, 'options', null))
+          message.channel.send(reddit.appendUrl(res))
         )
         break
       case 'spaceporn':
         promise = reddit.getSpacePorn(args).then(res =>
-          message.channel.send(res.text, _.get(res, 'options', null))
+          message.channel.send(reddit.appendUrl(res))
         )
         break
       case 'creepy':
         promise = reddit.getCreepy(args).then(res =>
-          message.channel.send(res.text, _.get(res, 'options', null))
+          message.channel.send(reddit.appendUrl(res))
         )
         break
       case 'gonecivil':
         promise = reddit.getGoneCivil(args).then(res =>
-          message.channel.send(res.text, _.get(res, 'options', null))
+          message.channel.send(reddit.appendUrl(res))
         )
         break
       case 'testerr':

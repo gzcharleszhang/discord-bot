@@ -108,12 +108,13 @@ const getPost = (subreddit, args, message) =>
       return { text: err }
     } else {
       return {
-        text: includeScore(res,`${message} ${res.url}`),
+        text: includeScore(res,message),
+        url: res.url,
         options: null
       }
     }
   }).catch(() => {
-    return { text: API_ERR }
+    return { text: API_ERR, url: null }
   })
 
 const getPostWithTitle = (subreddit, args) =>
@@ -122,13 +123,17 @@ const getPostWithTitle = (subreddit, args) =>
       return { text: err }
     } else {
       return {
-        text: includeScore(res, `${res.title} ${res.url}`),
+        text: includeScore(res, res.title),
+        url: res.url,
         options: null
       }
     }
   }).catch(() => {
-    return { text: API_ERR }
+    return { text: API_ERR, url: null }
   })
+
+const appendUrl = res =>
+  res.url ? `${res.text} ${res.url}` : res.text
 
 const getMeme = args =>
   getPost('dankmemes', args, 'Dank memes!')
@@ -154,5 +159,6 @@ module.exports = {
   getEarthPorn,
   getSpacePorn,
   getCreepy,
-  getGoneCivil
+  getGoneCivil,
+  appendUrl
 }

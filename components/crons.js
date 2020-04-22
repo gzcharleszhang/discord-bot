@@ -1,9 +1,9 @@
 const cron = require('cron')
-const _ = require('lodash')
 const moment = require('moment')
+const Discord = require('discord.js')
 
 const { getToday } = require('./today')
-const { getCaliforniaData } = require('./corona')
+const { getEarthPorn } = require('./reddit')
 
 const morningCron = client => new cron.CronJob('0 0 8 * * *', () => {
   console.log(`${moment().format()}: running cron`)
@@ -15,8 +15,12 @@ const morningCron = client => new cron.CronJob('0 0 8 * * *', () => {
   })
   
   client.users.fetch(process.env.NOTIF_USER_ID).then(user =>
-    getCaliforniaData().then(embed => {
-      embed.setTitle('Morn, here are some COVID-19 stats in California')
+    getEarthPorn(['top','day']).then(res => {
+      const embed = new Discord.MessageEmbed()
+        .setColor('#0099ff')
+        .setTitle('Morn, here\'s the top earthporn in the past day')
+        .setDescription(res.text)
+        .setImage(res.url)
       user.send(embed)
     })
   )
