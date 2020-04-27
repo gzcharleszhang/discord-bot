@@ -55,7 +55,7 @@ const startBot = () => {
   client.on('message', message => {
     let promise = Promise.resolve(null)
 
-    if (message.mentions.has(client.user)) {
+    if (message.mentions.has(client.user) && !message.author.bot) {
       message.channel.send('Hi.')
     }
 
