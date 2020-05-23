@@ -99,8 +99,6 @@ const getCaliforniaData = () => {
 const getCoronaData = args => {
   if (_.isEmpty(args)) {
     return getGlobalData()
-  } else if (args[0].toLowerCase().includes('cali')) {
-    return getCaliforniaData()
   } else if (args[0].length != 3) {
     return Promise.resolve('Please specify a 3-letter country code.')
   } else {

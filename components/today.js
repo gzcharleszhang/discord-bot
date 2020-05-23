@@ -5,7 +5,7 @@ const moment = require('moment')
 const getDaysOfTheYear = () =>
   axios.get('https://daysoftheyear.com').then(res => {
     const $ = cheerio.load(res.data)
-    const elem = $("#mainBannerLink")
+    const elem = $(".card__title > a", ".today")
     return {
       text: elem.text(),
       url: elem.attr('href')

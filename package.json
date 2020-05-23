@@ -20,5 +20,8 @@
     "numeral": "^2.0.6",
     "snoowrap": "^1.21.0",
     "winston": "^3.2.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4"
   }
 }
