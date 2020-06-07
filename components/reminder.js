@@ -21,8 +21,7 @@ const addReminder = (args, channel, author) => {
   }
   const message = args.pop()
   const timeStr = args.join(' ')
-  const refDate = moment().tz('America/New_York').toDate()
-  const date = chrono.parseDate(timeStr, refDate)
+  const date = chrono.parseDate(timeStr)
   if (!date) {
     return "Invalid datetime."
   }
