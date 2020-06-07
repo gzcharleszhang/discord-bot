@@ -10,8 +10,9 @@ const { getWeather } = require('./components/weather')
 const { getCoronaData } = require('./components/corona')
 const reddit = require('./components/reddit')
 const { helpEmbed } = require('./components/help')
-const { morningCron } = require('./components/crons')
+const { morningCron, reminderCron } = require('./components/crons')
 const { coinflip } = require('./components/coinflip')
+const { addReminder } = require('./components/reminder')
 
 const BOT_TOKEN = process.env.DISCORD_BOT_TOKEN
 const DEV_ID = process.env.DEV_ID
@@ -134,12 +135,12 @@ const startBot = () => {
           message.channel.send(reddit.appendUrl(res))
         )
         break
-      case 'earthporn':
+      case 'earth':
         promise = reddit.getEarthPorn(args).then(res =>
           message.channel.send(reddit.appendUrl(res))
         )
         break
-      case 'spaceporn':
+      case 'space':
         promise = reddit.getSpacePorn(args).then(res =>
           message.channel.send(reddit.appendUrl(res))
         )
@@ -153,6 +154,10 @@ const startBot = () => {
         promise = reddit.getGoneCivil(args).then(res =>
           message.channel.send(reddit.appendUrl(res))
         )
+        break
+      case 'remind':
+        const res = addReminder(args, message.channel.id, message.author.id)
+        message.channel.send(res)
         break
       case 'testerr':
         promise = message.channel.send(null)
@@ -174,6 +179,7 @@ const startBot = () => {
   client.login(BOT_TOKEN)
 
   morningCron(client).start()
+  reminderCron(client).start()
 }
 
 startBot();

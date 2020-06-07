@@ -1,6 +1,7 @@
 const cron = require('cron')
 const moment = require('moment')
 const Discord = require('discord.js')
+const db = require('../db/db')
 
 const { getToday } = require('./today')
 const { getEarthPorn } = require('./reddit')
@@ -26,6 +27,21 @@ const morningCron = client => new cron.CronJob('0 0 8 * * *', () => {
   )
 }, null, false, 'America/Toronto')
 
+const reminderCron = client => new cron.CronJob('15 * * * * *', () => {
+  const now = Date.now()
+  db.all('SELECT * FROM reminders WHERE ? > time', [now], (err, rows) => {
+    if (err) {
+      console.error(err)
+    }
+    rows.forEach(reminder => {
+      client.channels.fetch(reminder.channel_id).then(channel => {
+        channel.send(`<@${reminder.author_id}> ${reminder.message}`)
+      })
+    })
+  })
+})
+
 module.exports = {
-  morningCron
+  morningCron,
+  reminderCron
 }

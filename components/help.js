@@ -26,8 +26,8 @@ const helpEmbed = new Discord.MessageEmbed()
     { name: '🔥 Reddit Commands', value: `
 **.floridaman:** Get an article from /r/FloridaMan.
 **.meme:** Get a meme from /r/DankMemes.
-**.earthporn:** Get an image from /r/EarthPorn.
-**.spaceporn:** Get an image from /r/SpacePorn.
+**.earth:** Get an image from /r/EarthPorn.
+**.space:** Get an image from /r/SpacePorn.
 **.creepy:** Get a creepy post from /r/Creepy.
 **.gonecivil:** Get a civil post from /r/GoneCivil.
 
