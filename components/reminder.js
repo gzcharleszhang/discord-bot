@@ -1,6 +1,8 @@
 const chrono = require('chrono-node')
-const db = require('../db/db')
 const _ = require('lodash')
+const moment = require ('moment')
+
+const db = require('../db/db')
 
 const saveReminder = (time, channel, author, message) => {
   db.run(`
@@ -19,7 +21,8 @@ const addReminder = (args, channel, author) => {
   }
   const message = args.pop()
   const timeStr = args.join(' ')
-  const date = chrono.parseDate(timeStr)
+  const refDate = moment().tz('America/New_York').toDate()
+  const date = chrono.parseDate(timeStr, refDate)
   if (!date) {
     return "Invalid datetime."
   }
