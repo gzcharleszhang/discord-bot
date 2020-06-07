@@ -157,7 +157,7 @@ const startBot = () => {
         break
       case 'remind':
         const res = addReminder(args, message.channel.id, message.author.id)
-        message.channel.send(res)
+        promise = message.channel.send(res)
         break
       case 'testerr':
         promise = message.channel.send(null)

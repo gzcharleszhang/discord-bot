@@ -35,7 +35,13 @@ const reminderCron = client => new cron.CronJob('15 * * * * *', () => {
     }
     rows.forEach(reminder => {
       client.channels.fetch(reminder.channel_id).then(channel => {
-        channel.send(`<@${reminder.author_id}> ${reminder.message}`)
+        channel.send(`<@${reminder.author_id}> ${reminder.message}`).then(() => {
+          db.run('DELETE FROM reminders WHERE id = ?', [reminder.id], err => {
+            if (err) {
+              console.error(err)
+            }
+          })
+        })
       })
     })
   })
