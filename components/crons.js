@@ -5,6 +5,7 @@ const db = require('../db/db')
 
 const { getToday } = require('./today')
 const { getEarthPorn } = require('./reddit')
+const { deleteReminder } = require('./reminder')
 
 const morningCron = client => new cron.CronJob('0 0 8 * * *', () => {
   console.log(`${moment().format()}: running cron`)
@@ -36,11 +37,7 @@ const reminderCron = client => new cron.CronJob('*/15 * * * * *', () => {
     rows.forEach(reminder => {
       client.channels.fetch(reminder.channel_id).then(channel => {
         channel.send(`<@${reminder.author_id}> ${reminder.message}`).then(() => {
-          db.run('DELETE FROM reminders WHERE id = ?', [reminder.id], err => {
-            if (err) {
-              console.error(err)
-            }
-          })
+          deleteReminder(reminder.id)
         })
       })
     })
