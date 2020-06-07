@@ -8,11 +8,11 @@ const db = new sqlite.Database('./db/discord-bot.db', err => {
 
 db.run(`
 CREATE TABLE IF NOT EXISTS reminders (
-  id int PRIMARY_KEY,
-  time int NOT NULL,
-  author_id text NOT NULL,
-  channel_id text NOT NULL,
-  message text
+  id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+  time INTEGER NOT NULL,
+  author_id TEXT NOT NULL,
+  channel_id TEXT NOT NULL,
+  message TEXT
 )
 `)
 

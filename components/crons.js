@@ -27,7 +27,7 @@ const morningCron = client => new cron.CronJob('0 0 8 * * *', () => {
   )
 }, null, false, 'America/Toronto')
 
-const reminderCron = client => new cron.CronJob('15 * * * * *', () => {
+const reminderCron = client => new cron.CronJob('*/15 * * * * *', () => {
   const now = Date.now()
   db.all('SELECT * FROM reminders WHERE ? > time', [now], (err, rows) => {
     if (err) {

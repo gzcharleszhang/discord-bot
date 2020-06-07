@@ -23,12 +23,13 @@ const helpEmbed = new Discord.MessageEmbed()
 
 
 ` },
-    { name: '🦠 COVID-19', value: `
+    { name: '📅 Reminders', value: `
 **.remind [time] "[message]":** Set a reminder
 
 Example Usage:
 \`.remind 5 minute "Call Henry Gao."\`
 \`.remind tuesday "Ask Henry Gao about Java."\`
+
 
 ` },
     { name: '🔥 Reddit Commands', value: `
