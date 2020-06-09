@@ -44,20 +44,22 @@ const addReminder = (args, channel, author) => {
   return saveReminder(date.getTime(), channel.id, author.id, message).then(reminder_id => {
     const CANCEL_REACT = '❌'
     return channel.send(`
-    Reminder set on ${date}, ${CANCEL_REACT} react within 5 minutes to cancel.
-    `).then(msg => {
-    msg.react(CANCEL_REACT)
-  
-    const filter = (reaction, user) => (
-      reaction.emoji.name == CANCEL_REACT && user.id == author.id
-    )
-  
-    return msg.awaitReactions(filter, { max: 1, time: 300000 })
-      .then(() => {
-        deleteReminder(reminder_id)
-        return msg.edit('Reminder cancelled.')
-      })
-  })
+      Reminder set on ${date}, ${CANCEL_REACT} react within 5 minutes to cancel.
+      `).then(msg => {
+
+        const filter = (reaction, user) => (
+          reaction.emoji.name == CANCEL_REACT && user.id == author.id
+        )
+
+        const collector = msg.createReactionCollector(filter, { max: 1, time: 5000 });
+
+        collector.on('collect', () => {
+          deleteReminder(reminder_id)
+          return msg.edit('Reminder cancelled.')
+        });
+
+        return msg.react(CANCEL_REACT)
+    })
 
 })
 }
