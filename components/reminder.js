@@ -51,7 +51,7 @@ const addReminder = (args, channel, author) => {
           reaction.emoji.name == CANCEL_REACT && user.id == author.id
         )
 
-        const collector = msg.createReactionCollector(filter, { max: 1, time: 5000 });
+        const collector = msg.createReactionCollector(filter, { max: 1, time: 300000 });
 
         collector.on('collect', () => {
           deleteReminder(reminder_id)
