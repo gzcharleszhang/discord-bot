@@ -9,10 +9,11 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 
 RUN npm install
-# If you are building your code for production
-# RUN npm ci --only=production
+
+# Install pm2
+RUN npm install pm2 -g
 
 # Bundle app source
 COPY . .
 
-CMD [ "node", "index.js" ]
+CMD [ "pm2-runtime", "--raw", "index.js" ]

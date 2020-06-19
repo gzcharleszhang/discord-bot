@@ -11,8 +11,8 @@ const { getCoronaData } = require('./components/corona')
 const reddit = require('./components/reddit')
 const { helpEmbed } = require('./components/help')
 const { morningCron, reminderCron } = require('./components/crons')
-const { coinflip } = require('./components/coinflip')
-const { addReminder, deleteReminder } = require('./components/reminder')
+const { coinflip, dice } = require('./components/random')
+const { addReminder } = require('./components/reminder')
 
 const BOT_TOKEN = process.env.DISCORD_BOT_TOKEN
 const DEV_ID = process.env.DEV_ID
@@ -106,7 +106,7 @@ const startBot = () => {
       case 'help':
         promise = message.channel.send(helpEmbed)
         break
-      case 'coinflip':
+      case 'coin':
         promise = message.channel.send(coinflip(args))
         break
       case 'today':
@@ -157,6 +157,9 @@ const startBot = () => {
         break
       case 'remind':
         promise = addReminder(args, message.channel, message.author)
+        break
+      case 'dice':
+        promise = message.channel.send(dice(args))
         break
       case 'testerr':
         promise = message.channel.send(null)

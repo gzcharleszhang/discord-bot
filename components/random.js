@@ -27,6 +27,21 @@ const coinflip = args => {
     }
 }
 
+const dice = args => {
+  const ULIMIT = 42069420
+  const LLIMIT = 1
+  const DEFAULT_SIDES = 6
+  const numSides = _.isEmpty(args) ? DEFAULT_SIDES : parseInt(args[0])
+  if (isNaN(numSides)) {
+    return 'Invalid number of sides.'
+  } else if (numSides < LLIMIT || numSides > ULIMIT) {
+    return `The number of sides must be within ${LLIMIT} and ${ULIMIT}`
+  }
+  const res = Math.floor(Math.random() * numSides) + 1
+  return `You rolled a ${res} on a ${numSides}-sided dice.`
+}
+
 module.exports = {
-  coinflip
+  coinflip,
+  dice
 }

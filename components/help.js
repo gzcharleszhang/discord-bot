@@ -10,18 +10,16 @@ const helpEmbed = new Discord.MessageEmbed()
 **.todev [message]:** Send a message to the dev
 **.riothelp [message]:** Request support from a Riot specialist
 **.cshelp [message]:** Request support from a CS god
-**.coinflip:** Flip a coin
-**.coinflip [n]:** Flip a coin n times
+**.coin:** Flip a coin
+**.coin [n]:** Flip a coin n times
+**.dice:** Roll a six-sided dice
+**.dice: [n]** Roll a n-sided dice
 **.today:** Get date and day of the year
 **.weather [city] [state] [country_code]:** Get 3-hour forecast
-
-
 ` },
     { name: '🦠 COVID-19', value: `
 **.corona:** Get the latest global stats for COVID-19
 **.corona [country_code]:** Get the latest COVID-19 stats for a specific country (use 3-letter country codes found [here](https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes))
-
-
 ` },
     { name: '📅 Reminders', value: `
 **.remind [time] "[message]":** Set a reminder
@@ -29,8 +27,6 @@ const helpEmbed = new Discord.MessageEmbed()
 Example Usage:
 \`.remind 5 minute "Call Henry Gao."\`
 \`.remind tuesday "Ask Henry Gao about Java."\`
-
-
 ` },
     { name: '🔥 Reddit Commands', value: `
 **.floridaman:** Get an article from /r/FloridaMan.
