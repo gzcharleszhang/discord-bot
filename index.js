@@ -12,7 +12,7 @@ const reddit = require('./components/reddit')
 const { helpEmbed } = require('./components/help')
 const { morningCron, reminderCron } = require('./components/crons')
 const { coinflip, dice } = require('./components/random')
-const { addReminder } = require('./components/reminder')
+const { addReminder, getReminderForUser } = require('./components/reminder')
 
 const BOT_TOKEN = process.env.DISCORD_BOT_TOKEN
 const DEV_ID = process.env.DEV_ID
@@ -157,6 +157,10 @@ const startBot = () => {
         break
       case 'remind':
         promise = addReminder(args, message.channel, message.author)
+        break
+      case 'reminders':
+        promise = getReminderForUser(message.author, message.channel)
+          .then(msg => message.channel.send(msg))
         break
       case 'dice':
         promise = message.channel.send(dice(args))

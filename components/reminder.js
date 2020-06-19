@@ -17,7 +17,7 @@ const saveReminder = (time, channel, author, message) => {
       VALUES(?,?,?,?)
       `,
       [time,author,channel,message],
-      function(err) {
+      (err) => {
         if (err) {
           reject(err)
         }
@@ -30,6 +30,27 @@ const saveReminder = (time, channel, author, message) => {
 const deleteReminder = id => {
   db.run('DELETE FROM reminders WHERE id = ?', [id], dbErrorHandler)
 }
+
+const getReminderForUser = (user, channel) =>
+  new Promise((resolve, reject) => {
+  db.all(`
+    SELECT * FROM reminders
+    WHERE author_id = ? AND channel_id = ? AND time > ?
+  `, [user.id, channel.id, Date.now()], (err, rows) => {
+    if (err) {
+      reject(err)
+    }
+    if (_.isEmpty(rows)) {
+      resolve('You have no upcoming reminders.')
+    }
+    let msg = 'Your upcoming reminders:\n'
+    rows.forEach(r => {
+      const date = new Date(r.time)
+      msg += `${date}: ${r.message}\n`
+    })
+    resolve(msg)
+  })
+})
 
 const addReminder = (args, channel, author) => {
   if (_.isEmpty(args)) {
@@ -66,5 +87,6 @@ const addReminder = (args, channel, author) => {
 
 module.exports = {
   addReminder,
-  deleteReminder
+  deleteReminder,
+  getReminderForUser
 }
