@@ -17,7 +17,7 @@ const saveReminder = (time, channel, author, message) => {
       VALUES(?,?,?,?)
       `,
       [time,author,channel,message],
-      (err) => {
+      function(err) {
         if (err) {
           reject(err)
         }
@@ -36,6 +36,7 @@ const getReminderForUser = (user, channel) =>
   db.all(`
     SELECT * FROM reminders
     WHERE author_id = ? AND channel_id = ? AND time > ?
+    ORDER BY time ASC
   `, [user.id, channel.id, Date.now()], (err, rows) => {
     if (err) {
       reject(err)
@@ -45,8 +46,8 @@ const getReminderForUser = (user, channel) =>
     }
     let msg = 'Your upcoming reminders:\n'
     rows.forEach(r => {
-      const date = new Date(r.time)
-      msg += `${date}: ${r.message}\n`
+      const date = moment(r.time).format('llll')
+      msg += `${r.id} ${date}: ${r.message}\n`
     })
     resolve(msg)
   })
@@ -58,7 +59,7 @@ const addReminder = (args, channel, author) => {
   }
   const message = args.pop()
   const timeStr = args.join(' ')
-  const date = chrono.parseDate(timeStr)
+  const date = chrono.parseDate(timeStr, new Date(), { forwardDate: true })
   if (!date) {
     return channel.send("Invalid datetime.")
   }

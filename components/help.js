@@ -23,6 +23,7 @@ const helpEmbed = new Discord.MessageEmbed()
 ` },
     { name: '📅 Reminders', value: `
 **.remind [time] "[message]":** Set a reminder
+**.reminders:** Show your upcoming reminders
 
 Example Usage:
 \`.remind 5 minute "Call Henry Gao."\`
