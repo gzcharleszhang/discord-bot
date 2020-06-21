@@ -1,7 +1,7 @@
 const cron = require('cron')
 const moment = require('moment')
 const Discord = require('discord.js')
-const db = require('../db/db')
+const db = require('./db')
 
 const { getToday } = require('./today')
 const { getEarthPorn } = require('./reddit')

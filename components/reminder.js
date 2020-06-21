@@ -2,7 +2,7 @@ const chrono = require('chrono-node')
 const _ = require('lodash')
 const moment = require ('moment')
 
-const db = require('../db/db')
+const db = require('./db')
 
 const dbErrorHandler = err => {
   if (err) {
