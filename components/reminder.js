@@ -47,7 +47,7 @@ const getReminderForUser = (user, channel) =>
     let msg = 'Your upcoming reminders:\n'
     rows.forEach(r => {
       const date = moment(r.time).format('llll')
-      msg += `${r.id} ${date}: ${r.message}\n`
+      msg += `${date}: ${r.message}\n`
     })
     resolve(msg)
   })
