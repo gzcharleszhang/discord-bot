@@ -3,7 +3,7 @@ const moment = require('moment')
 const Discord = require('discord.js')
 const db = require('./db')
 
-const { getToday } = require('./today')
+const reddit = require('./reddit')
 const { getEarthPorn } = require('./reddit')
 const { deleteReminder } = require('./reminder')
 
@@ -11,8 +11,8 @@ const morningCron = client => new cron.CronJob('0 0 8 * * *', () => {
   console.log(`${moment().format()}: running cron`)
 
   client.channels.fetch(process.env.NOTIF_CHANNEL_ID).then(channel => {
-    getToday().then(today => {
-      channel.send(`Good morning, nerds. ${today}`)
+    reddit.getPost('dankmemes', ['top', 'day'], 'Meme of the day:').then(meme => {
+      channel.send(reddit.appendUrl(meme))
     })
   })
   

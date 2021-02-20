@@ -160,5 +160,6 @@ module.exports = {
   getSpacePorn,
   getCreepy,
   getGoneCivil,
-  appendUrl
+  appendUrl,
+  getPost
 }
