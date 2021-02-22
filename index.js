@@ -168,6 +168,9 @@ const startBot = () => {
       case 'zuker':
         promise = message.channel.send(new Discord.MessageAttachment('./data/zukerpog.png'))
         break
+      case 'amazon':
+        promise = message.channel.send(new Discord.MessageAttachment('./data/anson.png'))
+        break
       case 'testerr':
         promise = message.channel.send(null)
         break
