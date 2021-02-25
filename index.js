@@ -7,7 +7,7 @@ const moment = require('moment')
 
 const { getToday } = require('./components/today')
 const { getWeather } = require('./components/weather')
-const { getCoronaData } = require('./components/corona')
+const { getCoronaData, getVaccineData } = require('./components/corona')
 const reddit = require('./components/reddit')
 const { helpEmbed } = require('./components/help')
 const { morningCron, reminderCron } = require('./components/crons')
@@ -170,6 +170,11 @@ const startBot = () => {
         break
       case 'amazon':
         promise = message.channel.send(new Discord.MessageAttachment('./data/anson.png'))
+        break
+      case 'vaccine':
+        promise = getVaccineData().then(msg => {
+          return message.channel.send(msg)
+        })
         break
       case 'testerr':
         promise = message.channel.send(null)
