@@ -126,7 +126,7 @@ const getVaccineData = () =>
 
       const embed = new Discord.MessageEmbed()
       .setColor('#0099ff')
-      .setTitle(`Latest COVID-19 Stats in California`)
+      .setTitle(`Latest COVID-19 Vaccination Stats in Ontario`)
       .setDescription(`Last updated ${report_date}`)
       .addFields(
         { name: 'Daily doses administered', value: `${previous_day_doses_administered}`, inline: true},
