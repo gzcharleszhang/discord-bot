@@ -3,9 +3,6 @@ const _ = require('lodash')
 const moment = require('moment')
 const Discord = require('discord.js')
 const csv = require('@fast-csv/parse')
-const Nightmare = require('nightmare')
-
-const nightmare = Nightmare()
 
 const noData = 'No data available.'
 
@@ -110,22 +107,33 @@ const getCoronaData = args => {
 }
 
 const getVaccineData = () =>
-  nightmare.goto('https://covid-19.ontario.ca/covid-19-vaccines-ontario')
-    .evaluate(() => Array.from(document.querySelectorAll(
-      '#total-doses-administered, #previous-day-doses-administered, #total-vaccinations-completed'
-      + ', #vaccine-numbers-date'))
-      .map(node => node.textContent)
-    )
-    .then(data => {
+  axios.get('https://data.ontario.ca/api/3/action/datastore_search',
+    {
+      params: {
+        resource_id: '8a89caa9-511c-4568-af89-7f2174b4378c',
+        limit: '1',
+        sort: 'report_date desc'
+      }
+    })
+    .then(res => {
+      const { records }  = res.data.result
+      const data = records[0]
+      const { report_date,
+        previous_day_doses_administered,
+        total_doses_administered,
+        total_individuals_fully_vaccinated
+      } = data
+
       const embed = new Discord.MessageEmbed()
       .setColor('#0099ff')
-      .setTitle(`Latest COVID-19 Vaccination Stats in Ontario`)
-      .setDescription(`Last updated ${data[0]}`)
+      .setTitle(`Latest COVID-19 Stats in California`)
+      .setDescription(`Last updated ${report_date}`)
       .addFields(
-        { name: 'Daily doses administered', value: data[1], inline: true},
-        { name: 'Total doses administered', value: data[2], inline: true},
-        { name: 'People fully faccinated', value: data[3], inline: true},
+        { name: 'Daily doses administered', value: `${previous_day_doses_administered}`, inline: true},
+        { name: 'Total doses administered', value: `${total_doses_administered}`, inline: true},
+        { name: 'People fully vaccinated', value: `${total_individuals_fully_vaccinated}`, inline: true},
       )
+
       return embed
     })
 
