@@ -70,7 +70,9 @@ const startBot = () => {
       }
       return arg
     })
-    const command = args.shift().toLowerCase();
+    const last_arg = args.shift()
+    if (!last_arg) return Promise.resolve(null);
+    const command = last_arg.toLowerCase();
     const argStr = message.content.slice(command.length + 2)
 
     const requestObj = {
