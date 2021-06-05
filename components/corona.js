@@ -119,7 +119,7 @@ const getVaccineData = () =>
       const { records }  = res.data.result
       const data = records[0]
       const { report_date,
-        previous_day_doses_administered,
+        previous_day_total_doses_administered,
         total_doses_administered,
         total_individuals_fully_vaccinated
       } = data
@@ -129,7 +129,7 @@ const getVaccineData = () =>
       .setTitle(`Latest COVID-19 Vaccination Stats in Ontario`)
       .setDescription(`Last updated ${report_date}`)
       .addFields(
-        { name: 'Daily doses administered', value: `${previous_day_doses_administered}`, inline: true},
+        { name: 'Daily doses administered', value: `${previous_day_total_doses_administered}`, inline: true},
         { name: 'Total doses administered', value: `${total_doses_administered}`, inline: true},
         { name: 'People fully vaccinated', value: `${total_individuals_fully_vaccinated}`, inline: true},
       )
