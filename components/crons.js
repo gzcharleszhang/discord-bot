@@ -1,24 +1,32 @@
 const cron = require('cron')
 const moment = require('moment')
-const Discord = require('discord.js')
 const db = require('./db')
 
-const { getEarthPorn } = require('./reddit')
+const { getEarthPorn, getMeme, getMeIRL, getSpacePorn, getFloridaMan, getSkyPorn, getCreepy } = require('./reddit')
 const { deleteReminder } = require('./reminder')
 
-const morningCron = client => new cron.CronJob('0 0 8 * * *', async () => {
-  console.log(`${moment().format()}: running cron`)
+const dayToRedditFn = [
+  [getMeme, 'Meme'],              // Monday
+  [getEarthPorn, 'Nature'],       // Tuesday
+  [getMeIRL, 'Me IRL'],           // Wednesday
+  [getSpacePorn, 'Space'],        // Thursday
+  [getFloridaMan, 'Florida Man'], // Friday
+  [getSkyPorn, 'Sky'],            // Saturday
+  [getCreepy, 'Creepy Pic'],      // Sunday
+]
 
-  const earth = await getEarthPorn(['top','day'])
-  const earthEmbed = new Discord.MessageEmbed()
-    .setColor('#0099ff')
-    .setTitle('Nature pic of the day')
-    .setDescription(earth.text)
-    .setImage(earth.url)
+const redditOfTheDay = async (client) => {
+  console.log(`${moment().format()}: reddit of the day`)
+
+  const [redditFn, title] = dayToRedditFn[new Date().getDay()]
+  const post = await redditFn(['top','week'])
 
   const channel = await client.channels.fetch(process.env.NOTIF_CHANNEL_ID)
-  channel.send(earthEmbed)
-}, null, false, 'America/Toronto')
+  channel.send(`**${title} of The Week**\n${post.text}: ${post.url}`)
+}
+
+const morningCron = client => new cron.CronJob(
+  '0 0 8 * * *', () => redditOfTheDay(client), null, false, 'America/Toronto')
 
 const reminderCron = client => new cron.CronJob('*/15 * * * * *', () => {
   const now = Date.now()
@@ -38,5 +46,6 @@ const reminderCron = client => new cron.CronJob('*/15 * * * * *', () => {
 
 module.exports = {
   morningCron,
-  reminderCron
+  reminderCron,
+  redditOfTheDay
 }

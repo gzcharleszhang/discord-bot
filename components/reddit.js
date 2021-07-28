@@ -153,6 +153,12 @@ const getSpacePorn = args =>
 const getGoneCivil = args =>
   getPostWithTitle('gonecivil', args)
 
+const getMeIRL = args =>
+  getPostWithTitle('meirl', args)
+
+const getSkyPorn = args =>
+  getPostWithTitle('skyporn', args)
+
 module.exports = {
   getMeme,
   getFloridaMan,
@@ -161,5 +167,7 @@ module.exports = {
   getCreepy,
   getGoneCivil,
   appendUrl,
-  getPost
+  getPost,
+  getMeIRL,
+  getSkyPorn
 }

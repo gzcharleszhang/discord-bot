@@ -10,7 +10,7 @@ const { getWeather } = require('./components/weather')
 const { getCoronaData, getVaccineData } = require('./components/corona')
 const reddit = require('./components/reddit')
 const { helpEmbed } = require('./components/help')
-const { morningCron, reminderCron } = require('./components/crons')
+const { morningCron, reminderCron, redditOfTheDay } = require('./components/crons')
 const { coinflip, dice } = require('./components/random')
 const { addReminder, getReminderForUser } = require('./components/reminder')
 
@@ -87,6 +87,9 @@ const startBot = () => {
     logger.info(requestObj)
 
     switch(command) {
+      case 'test':
+        promise = redditOfTheDay(client)
+        break
       case 'wmloh':
         promise = message.channel.send('https://www.linkedin.com/in/wei-min-loh/')
         break
@@ -154,6 +157,16 @@ const startBot = () => {
         break
       case 'gonecivil':
         promise = reddit.getGoneCivil(args).then(res =>
+          message.channel.send(reddit.appendUrl(res))
+        )
+        break
+      case 'sky':
+        promise = reddit.getSkyPorn(args).then(res =>
+          message.channel.send(reddit.appendUrl(res))
+        )
+        break
+      case 'meirl':
+        promise = reddit.getMeIRL(args).then(res =>
           message.channel.send(reddit.appendUrl(res))
         )
         break
