@@ -87,9 +87,6 @@ const startBot = () => {
     logger.info(requestObj)
 
     switch(command) {
-      case 'test':
-        promise = redditOfTheDay(client)
-        break
       case 'wmloh':
         promise = message.channel.send('https://www.linkedin.com/in/wei-min-loh/')
         break
