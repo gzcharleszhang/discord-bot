@@ -3,29 +3,21 @@ const moment = require('moment')
 const Discord = require('discord.js')
 const db = require('./db')
 
-const reddit = require('./reddit')
 const { getEarthPorn } = require('./reddit')
 const { deleteReminder } = require('./reminder')
 
 const morningCron = client => new cron.CronJob('0 0 8 * * *', () => {
   console.log(`${moment().format()}: running cron`)
 
-  client.channels.fetch(process.env.NOTIF_CHANNEL_ID).then(channel => {
-    reddit.getPost('dankmemes', ['top', 'day'], 'Meme of the day:').then(meme => {
-      channel.send(reddit.appendUrl(meme))
-    })
-  })
-  
-  client.users.fetch(process.env.NOTIF_USER_ID).then(user =>
-    getEarthPorn(['top','day']).then(res => {
-      const embed = new Discord.MessageEmbed()
-        .setColor('#0099ff')
-        .setTitle('Morn, here\'s the top earthporn in the past day')
-        .setDescription(res.text)
-        .setImage(res.url)
-      user.send(embed)
-    })
-  )
+  const earth = await getEarthPorn(['top','day'])
+  const earthEmbed = new Discord.MessageEmbed()
+    .setColor('#0099ff')
+    .setTitle('Nature pic of the day')
+    .setDescription(earth.text)
+    .setImage(earth.url)
+
+  const channel = await client.channels.fetch(process.env.NOTIF_CHANNEL_ID)
+  channel.send(earthEmbed)
 }, null, false, 'America/Toronto')
 
 const reminderCron = client => new cron.CronJob('*/15 * * * * *', () => {
