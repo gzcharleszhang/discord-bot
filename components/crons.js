@@ -6,7 +6,7 @@ const db = require('./db')
 const { getEarthPorn } = require('./reddit')
 const { deleteReminder } = require('./reminder')
 
-const morningCron = client => new cron.CronJob('0 0 8 * * *', () => {
+const morningCron = client => new cron.CronJob('0 0 8 * * *', async () => {
   console.log(`${moment().format()}: running cron`)
 
   const earth = await getEarthPorn(['top','day'])
