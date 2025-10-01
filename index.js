@@ -1,6 +1,9 @@
 require('dotenv').config()
 const Discord = require('discord.js')
-const client = new Discord.Client();
+const client = new Discord.Client({
+  ws: { intents: ['GUILDS', 'GUILD_MESSAGES', 'DIRECT_MESSAGES'] },
+  partials: ['CHANNEL', 'MESSAGE', 'USER', 'GUILD_MEMBER', 'REACTION'],
+});
 const _ = require('lodash')
 const winston = require('winston')
 const moment = require('moment')
