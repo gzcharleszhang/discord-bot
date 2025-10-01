@@ -1,6 +1,9 @@
 require('dotenv').config()
 const Discord = require('discord.js')
-const client = new Discord.Client()
+const client = new Discord.Client({
+  ws: { intents: ['GUILDS', 'GUILD_MESSAGES', 'DIRECT_MESSAGES'] },
+  partials: ['CHANNEL', 'MESSAGE', 'USER', 'GUILD_MEMBER', 'REACTION'],
+});
 const _ = require('lodash')
 const winston = require('winston')
 const moment = require('moment')
@@ -56,6 +59,14 @@ const startBot = () => {
   client.on('message', message => {
     let promise = Promise.resolve(null)
 
+    if (!message || !message.channel || !message.author || !message.content) {
+      logger.info({
+        messagePayload: message,
+        content: "missing required fields",
+      })
+      return Promise.resolve(null)
+    }
+
     if (message.mentions.has(client.user) && !message.author.bot) {
       message.channel.send('Hi.')
     }
@@ -84,7 +95,7 @@ const startBot = () => {
       content: message.content
     }
 
-    logger.info(requestObj)
+
 
     switch(command) {
       case 'wmloh':
