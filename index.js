@@ -59,6 +59,12 @@ const startBot = () => {
   client.on('message', message => {
     let promise = Promise.resolve(null)
 
+    if (message.mentions.has(client.user) && !message.author.bot) {
+      message.channel.send('Hi.')
+    }
+
+    if (!message.content.startsWith(trigger) || message.author.bot) return Promise.resolve(null)
+    
     if (!message || !message.channel || !message.author || !message.content) {
       logger.info({
         messagePayload: message,
@@ -66,12 +72,6 @@ const startBot = () => {
       })
       return Promise.resolve(null)
     }
-
-    if (message.mentions.has(client.user) && !message.author.bot) {
-      message.channel.send('Hi.')
-    }
-
-    if (!message.content.startsWith(trigger) || message.author.bot) return Promise.resolve(null)
 
     // const args = message.content.slice(trigger.length).split(' ');
     let args = message.content.slice(trigger.length).match(/[^\s"']+|"([^"]*)"|'([^']*)'/g)
